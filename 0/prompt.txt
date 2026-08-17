@@ -1,0 +1,9 @@
+create a new branch docu
+
+---
+
+swicth to branch docu
+
+---
+
+create a comprehensive documentation in MD in a dedictated folder called "docu"
