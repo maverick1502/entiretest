@@ -115,6 +115,12 @@ pytest --cov-report=html
 open htmlcov/index.html
 ```
 
+## Weiterführende Dokumentation / Further documentation
+
+Ausführliche Dokumentation (Architektur, vollständige CLI- und API-Referenz, Testkonzept, Entwickler-Guide, FAQ) findet sich im Ordner [`docu/`](docu/README.md).
+
+In-depth documentation (architecture, full CLI & API reference, testing strategy, developer guide, FAQ) lives in the [`docu/`](docu/README.md) folder.
+
 ## Lizenz
 
 MIT
