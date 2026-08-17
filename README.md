@@ -2,6 +2,8 @@
 
 Ein kleines Python3-Kommandozeilentool, das alle `.mkv`-Dateien in einem angegebenen Ordner auflistet.
 
+A small Python3 command-line tool that lists all `.mkv` files in a given folder.
+
 ## Features
 
 - Listet alle `.mkv`-Dateien (case-insensitive, also auch `.MKV`) in einem Ordner auf
@@ -112,6 +114,12 @@ Für einen HTML-Bericht:
 pytest --cov-report=html
 open htmlcov/index.html
 ```
+
+## Weiterführende Dokumentation / Further documentation
+
+Ausführliche Dokumentation (Architektur, vollständige CLI- und API-Referenz, Testkonzept, Entwickler-Guide, FAQ) findet sich im Ordner [`docu/`](docu/README.md).
+
+In-depth documentation (architecture, full CLI & API reference, testing strategy, developer guide, FAQ) lives in the [`docu/`](docu/README.md) folder.
 
 ## Lizenz
 
