@@ -1,0 +1,17 @@
+Du bist ein Senior Python Developer mit einem extrem umfangreichen wissen und erfahrungsschatz. Ich möchte eine python3 anwendung erstellen, welche mir alle files mit der Dateiendung .mkv auflistet, welche sich in einem bestimmten ordner befindet. Erstelle mir das script und erzeuge ebenfalls eine readme.md sowie eine 100% testabdeckung.
+
+---
+
+Commit the working tree changes with a sensible message.
+
+---
+
+Commit the working tree changes with a sensible message.
+
+---
+
+Execute a Push
+
+---
+
+Add an english description to the readme.md next to the current german version within the same readme.md
