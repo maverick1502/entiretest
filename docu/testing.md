@@ -7,7 +7,8 @@
   [`coverage.py`](https://coverage.readthedocs.io/))
 - Enforced threshold: **100% line and branch coverage** — the test run fails if
   coverage drops below that, via `--cov-fail-under=100` in `pyproject.toml`.
-- Test files: [`tests/test_finder.py`](../tests/test_finder.py) and
+- Test files: [`tests/test_finder.py`](../tests/test_finder.py),
+  [`tests/test_csv_export.py`](../tests/test_csv_export.py), and
   [`tests/test_cli.py`](../tests/test_cli.py).
 
 ## Running the tests
@@ -30,13 +31,14 @@ Expected output looks like:
 
 ```
 ================================ tests coverage ================================
-Name                     Stmts   Miss Branch BrPart  Cover   Missing
---------------------------------------------------------------------
-mkv_lister/__init__.py       3      0      0      0   100%
-mkv_lister/cli.py           25      0      4      0   100%
-mkv_lister/finder.py        16      0      6      0   100%
---------------------------------------------------------------------
-TOTAL                       44      0     10      0   100%
+Name                       Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------------------
+mkv_lister/__init__.py         4      0      0      0   100%
+mkv_lister/cli.py             33      0      6      0   100%
+mkv_lister/csv_export.py      34      0     10      0   100%
+mkv_lister/finder.py          16      0      6      0   100%
+----------------------------------------------------------------------
+TOTAL                         87      0     22      0   100%
 Required test coverage of 100% reached. Total coverage: 100.00%
 ```
 
@@ -101,17 +103,37 @@ real, ephemeral directory trees on disk (no mocking of the filesystem):
 - Accepting a plain `str` path, not just `Path`.
 - Deterministic alphabetical sort order.
 
+### `tests/test_csv_export.py`
+
+Covers `parse_filename`, `format_size`, and `write_csv` in isolation:
+
+- `parse_filename`: year at the end, year in the middle, no year present,
+  parenthesized non-year content left untouched, surrounding whitespace
+  stripped.
+- `format_size`: zero bytes, plain bytes, kilobytes, megabytes, gigabytes, and
+  the fallback beyond petabytes (exabytes) — exercising every unit boundary in
+  the loop for full branch coverage.
+- `write_csv`: header and row content (including the `Pfad`/`Dateiname`/`Jahr`
+  split for a file with a year in its name), a file without a year, an empty
+  file list (header-only output), and UTF-8 encoding of non-ASCII filenames
+  (e.g. umlauts).
+
 ### `tests/test_cli.py`
 
 Covers `build_parser()` and `main()`:
 
-- Argument parsing defaults (`recursive` defaults to `False`) and the `-r`/
-  `--recursive` flag.
+- Argument parsing defaults (`recursive` defaults to `False`, `csv` defaults to
+  `None`) and the `-r`/`--recursive` and `--csv` flags.
 - `main()` printing found files to stdout with exit code `0`.
 - `main()` printing the "no files found" message with exit code `0`.
 - `main()` printing errors to stderr with exit code `1`, for both exception types.
 - `main()` reading from `sys.argv` when called with `argv=None`
   (via `monkeypatch`).
+- `main()` with `--csv`: writing the CSV file and printing a confirmation
+  message, writing a header-only CSV when no files are found, not writing any
+  file when `--csv` is omitted, and returning exit code `1` with a stderr
+  message when the CSV destination can't be written (e.g. parent directory
+  doesn't exist).
 - A true end-to-end subprocess test invoking `python -m mkv_lister.cli` to verify
   the module is runnable as a script, independent of the installed console
   script.

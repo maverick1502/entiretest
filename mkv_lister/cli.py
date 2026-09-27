@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional
 
+from .csv_export import write_csv
 from .finder import find_mkv_files
 
 
@@ -26,6 +27,16 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Auch Unterordner durchsuchen",
     )
+    parser.add_argument(
+        "--csv",
+        type=Path,
+        default=None,
+        metavar="DATEI",
+        help=(
+            "Ergebnisse zusätzlich als CSV-Datei speichern "
+            "(Spalten: Pfad;Dateiname;Jahr;Size, UTF-8)"
+        ),
+    )
     return parser
 
 
@@ -41,10 +52,17 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     if not files:
         print("Keine .mkv-Dateien gefunden.")
-        return 0
+    else:
+        for file in files:
+            print(file)
 
-    for file in files:
-        print(file)
+    if args.csv is not None:
+        try:
+            write_csv(files, args.csv)
+        except OSError as exc:
+            print(f"Fehler beim Schreiben der CSV-Datei: {exc}", file=sys.stderr)
+            return 1
+        print(f"CSV-Datei geschrieben: {args.csv}")
 
     return 0
 

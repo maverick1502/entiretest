@@ -9,6 +9,7 @@ A small Python3 command-line tool that lists all `.mkv` files in a given folder.
 - Listet alle `.mkv`-Dateien (case-insensitive, also auch `.MKV`) in einem Ordner auf
 - Optional rekursive Suche in Unterordnern (`-r` / `--recursive`)
 - Alphabetisch sortierte Ausgabe
+- Optionaler CSV-Export (`--csv`) mit Pfad, Dateiname, Jahr und Größe
 - Saubere Fehlermeldungen bei nicht existierendem Pfad oder wenn der Pfad kein Ordner ist
 - 100 % Testabdeckung (Zeilen und Branches)
 
@@ -70,6 +71,29 @@ $ mkv-lister /pfad/existiert/nicht
 Fehler: Der Ordner '/pfad/existiert/nicht' existiert nicht.
 ```
 
+### CSV-Export
+
+Mit `--csv <datei>` wird zusätzlich zur normalen Ausgabe eine CSV-Datei geschrieben:
+
+```bash
+mkv-lister /pfad/zum/ordner -r --csv ausgabe.csv
+```
+
+- Trennzeichen: `;`
+- Kodierung: UTF-8
+- Header: `Pfad;Dateiname;Jahr;Size`
+  - **Pfad**: Ordner, der die Datei enthält (ohne Dateiname)
+  - **Dateiname**: Dateiname ohne Endung und ohne eine im Namen in Klammern stehende Jahreszahl
+  - **Jahr**: die Jahreszahl aus dem Dateinamen, ohne Klammern (leer, falls keine gefunden wurde)
+  - **Size**: Dateigröße menschenlesbar formatiert (z.B. `1.44 GB`)
+
+Beispiel für `/Filme/Argo/Argo (2012).mkv` (1.500.000 Bytes):
+
+```csv
+Pfad;Dateiname;Jahr;Size
+/Filme/Argo;Argo;2012;1.43 MB
+```
+
 ## Als Python-Bibliothek verwenden
 
 ```python
@@ -82,16 +106,27 @@ for file in files:
 
 `find_mkv_files` gibt eine sortierte Liste von `pathlib.Path`-Objekten zurück und wirft `FileNotFoundError` bzw. `NotADirectoryError`, falls der übergebene Pfad ungültig ist.
 
+Für den CSV-Export steht ebenfalls `write_csv` zur Verfügung:
+
+```python
+from mkv_lister import find_mkv_files, write_csv
+
+files = find_mkv_files("/pfad/zum/ordner", recursive=True)
+write_csv(files, "ausgabe.csv")
+```
+
 ## Projektstruktur
 
 ```
 .
 ├── mkv_lister/
-│   ├── __init__.py    # Paket-Exporte
-│   ├── finder.py       # Kernlogik: Suche nach .mkv-Dateien
-│   └── cli.py           # Kommandozeilen-Interface
+│   ├── __init__.py       # Paket-Exporte
+│   ├── finder.py          # Kernlogik: Suche nach .mkv-Dateien
+│   ├── csv_export.py       # CSV-Export: Jahr-/Namens-Parsing, Größenformatierung
+│   └── cli.py                # Kommandozeilen-Interface
 ├── tests/
 │   ├── test_finder.py
+│   ├── test_csv_export.py
 │   └── test_cli.py
 ├── conftest.py
 ├── pyproject.toml

@@ -3,14 +3,14 @@
 ## Synopsis
 
 ```
-mkv-lister DIRECTORY [-r | --recursive]
+mkv-lister DIRECTORY [-r | --recursive] [--csv FILE]
 ```
 
 Equivalent forms:
 
 ```bash
-mkv-lister DIRECTORY [-r]
-python3 -m mkv_lister.cli DIRECTORY [-r]
+mkv-lister DIRECTORY [-r] [--csv FILE]
+python3 -m mkv_lister.cli DIRECTORY [-r] [--csv FILE]
 ```
 
 Both invoke the same `main()` function; the `mkv-lister` console script is
@@ -28,6 +28,7 @@ installed by `pip install -e .` (see [development.md](development.md)) via the
 | Option | Short | Description |
 |---|---|---|
 | `--recursive` | `-r` | Also search all subdirectories, recursively. Without this flag, only the top level of `directory` is searched. |
+| `--csv FILE` | — | Additionally write the results to `FILE` as a CSV file. See [CSV export](#csv-export) below. |
 | `--help` | `-h` | Show the auto-generated `argparse` help text and exit (exit code `0`). |
 
 ## Behavior
@@ -49,6 +50,8 @@ installed by `pip install -e .` (see [development.md](development.md)) via the
 | No `.mkv` files found | `Keine .mkv-Dateien gefunden.` | — | `0` |
 | `directory` does not exist | — | `Fehler: Der Ordner '<path>' existiert nicht.` | `1` |
 | `directory` exists but is not a directory (e.g. it's a file) | — | `Fehler: '<path>' ist kein Ordner.` | `1` |
+| `--csv FILE` given and the file was written successfully | `CSV-Datei geschrieben: <FILE>` (in addition to the scenarios above) | — | `0` |
+| `--csv FILE` given but `FILE` cannot be written (e.g. parent directory doesn't exist, permission denied) | — | `Fehler beim Schreiben der CSV-Datei: <details>` | `1` |
 | Invalid arguments (e.g. missing `directory`) | — | `argparse` usage/error text | `2` (standard `argparse` behavior) |
 
 > Note: The "no files found" and error messages are currently in German, matching
@@ -106,6 +109,42 @@ Piping output, e.g. counting files or feeding another tool:
 mkv-lister ~/Videos -r | wc -l
 mkv-lister ~/Videos -r | xargs -I{} mv {} /archive/
 ```
+
+## CSV export
+
+`--csv FILE` writes the same set of files that would be printed to `stdout` into
+a CSV file at `FILE`, in addition to (not instead of) the normal console output.
+The file is written with:
+
+- Delimiter: `;`
+- Encoding: UTF-8 (no BOM)
+- Header row: `Pfad;Dateiname;Jahr;Size`
+
+| Column | Contents |
+|---|---|
+| `Pfad` | The **directory** containing the file — i.e. `file.parent` — without the filename. |
+| `Dateiname` | The filename without its extension and without a parenthesized 4-digit year, e.g. `Argo (2012).mkv` → `Argo`. If no such year is present, the filename (minus extension) is used unchanged. |
+| `Jahr` | The 4-digit year found in parentheses in the filename, without the parentheses (e.g. `2012`). Empty if no year was found. |
+| `Size` | The file size, human-readable (e.g. `1.44 GB`, `320 KB`, `500 B`), using 1024-based units up to `EB`. |
+
+If the CSV file already exists, it is overwritten. If no matching `.mkv` files
+were found, a CSV containing only the header row is still written.
+
+Example, given a file at `/Filme/Argo/Argo (2012).mkv` (1,500,000 bytes):
+
+```bash
+$ mkv-lister /Filme -r --csv ausgabe.csv
+/Filme/Argo/Argo (2012).mkv
+CSV-Datei geschrieben: ausgabe.csv
+```
+
+```csv
+Pfad;Dateiname;Jahr;Size
+/Filme/Argo;Argo;2012;1.43 MB
+```
+
+See [api-reference.md](api-reference.md#write_csvfiles-destination) for the
+underlying library function and the exact year/size formatting rules.
 
 ## Scripting notes
 
