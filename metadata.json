@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "01M3HB5Y5Y943GR8XNAP2ERGYT",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "README.md",
+    "docu/api-reference.md",
+    "docu/architecture.md",
+    "docu/cli-reference.md",
+    "docu/testing.md",
+    "mkv_lister/__init__.py",
+    "mkv_lister/cli.py",
+    "mkv_lister/csv_export.py",
+    "tests/test_cli.py",
+    "tests/test_csv_export.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 214,
+    "cache_creation_tokens": 245305,
+    "cache_read_tokens": 11308600,
+    "output_tokens": 65713,
+    "api_call_count": 107
+  }
+}

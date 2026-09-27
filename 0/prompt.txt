@@ -1,0 +1,28 @@
+I already did this in the terminal and pushed it to origin and merged it into main
+
+---
+
+yes, switch to main and pull
+
+---
+
+Wie kann ich das tool nutzen ohne zuvor die installtion des tools durchzuführen. z.b. mit python3 tool [Pfad zu den Files]
+
+---
+
+Erweitere das script dahingehend, dass die Ausgabe wie folgt aussieht und als csv datei gespeichert wird. Trennzeichen ist ";"
+Codepage ist UTF8
+Header: Pfad;Dateiname; Size
+Aufbau der Einträge:
+Pfad=Pfad zur datei
+Dateiname=
+
+---
+
+Erweitere das script dahingehend, dass die Ausgabe wie folgt aussieht und als csv datei gespeichert wird. Trennzeichen ist ";"
+Codepage ist UTF8
+Header: Pfad;Dateiname; Jahr;Size
+Aufbau der Einträge:
+Pfad=Pfad zur datei
+Dateiname=Dateiname ohne suffix und ohne Jahreszahl, welche im Dateinamen in () steht.
+Jahr= findet sich im Dateiname. In der Spalte bitte ohne () angeben
